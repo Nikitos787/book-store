@@ -11,25 +11,32 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class BookSpecificationBuilder implements SpecificationBuilder<Book> {
+    private static final String AUTHOR_KEY_FIELD = "author";
+    private static final String TITLE_KEY_FIELD = "title";
+    private static final String PRICE_KEY_FIELD = "price";
+
     private final SpecificationProviderManager<Book> specificationProviderManager;
 
     @Override
-    public Specification<Book> build(BookSearchParametersDto bookParams) {
+    public Specification<Book> build(BookSearchParametersDto searchParametersDto) {
         Specification<Book> specification = Specification.where(null);
-        if (bookParams.getAuthors() != null && bookParams.getAuthors().length > 0) {
+        if (searchParametersDto.getAuthors() != null
+                && searchParametersDto.getAuthors().length > 0) {
             specification = specification.and(specificationProviderManager
-                    .getSpecificationProvider("author")
-                    .getSpecification(bookParams.getAuthors()));
+                    .getSpecificationProvider(AUTHOR_KEY_FIELD)
+                    .getSpecification(searchParametersDto.getAuthors()));
         }
-        if (bookParams.getTitles() != null && bookParams.getTitles().length > 0) {
+        if (searchParametersDto.getTitles() != null
+                && searchParametersDto.getTitles().length > 0) {
             specification = specification.and(specificationProviderManager
-                    .getSpecificationProvider("title")
-                    .getSpecification(bookParams.getTitles()));
+                    .getSpecificationProvider(TITLE_KEY_FIELD)
+                    .getSpecification(searchParametersDto.getTitles()));
         }
-        if (bookParams.getPrices() != null && bookParams.getPrices().length > 0) {
+        if (searchParametersDto.getPrices() != null
+                && searchParametersDto.getPrices().length > 0) {
             specification = specification.and(specificationProviderManager
-                    .getSpecificationProvider("price")
-                    .getSpecification(bookParams.getPrices()));
+                    .getSpecificationProvider(PRICE_KEY_FIELD)
+                    .getSpecification(searchParametersDto.getPrices()));
         }
         return specification;
     }
