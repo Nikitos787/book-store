@@ -20,5 +20,4 @@ public class AuthorSpecificationProvider implements SpecificationProvider<Book> 
     public String getKey() {
         return AUTHOR_KEY_FIELD;
     }
-
 }
