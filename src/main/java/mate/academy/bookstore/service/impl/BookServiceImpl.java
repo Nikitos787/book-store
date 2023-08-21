@@ -23,8 +23,8 @@ public class BookServiceImpl implements BookService {
     private final BookSpecificationBuilder bookSpecificationBuilder;
 
     @Override
-    public BookDto save(CreateBookRequestDto dto) {
-        Book bookForSafe = bookMapper.toModel(dto);
+    public BookDto save(CreateBookRequestDto createBookRequestDto) {
+        Book bookForSafe = bookMapper.toModel(createBookRequestDto);
         bookForSafe.setIsbn(UUID.randomUUID().toString());
         return bookMapper.toDto(bookRepository.save(bookForSafe));
     }
@@ -42,21 +42,21 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookDto> searchBooks(BookSearchParametersDto searchParameters) {
-        Specification<Book> specification = bookSpecificationBuilder.build(searchParameters);
+    public List<BookDto> searchBooks(BookSearchParametersDto searchParametersDto) {
+        Specification<Book> specification = bookSpecificationBuilder.build(searchParametersDto);
         return bookRepository.findAll(specification).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
 
     @Override
-    public BookDto update(Long id, CreateBookRequestDto dto) {
+    public BookDto update(Long id, CreateBookRequestDto createBookRequestDto) {
         Book bookFromDb = getBookModelFromDb(id);
-        bookFromDb.setAuthor(dto.getAuthor());
-        bookFromDb.setPrice(dto.getPrice());
-        bookFromDb.setTitle(dto.getTitle());
-        bookFromDb.setCoverImage(dto.getCoverImage());
-        bookFromDb.setDescription(dto.getDescription());
+        bookFromDb.setAuthor(createBookRequestDto.getAuthor());
+        bookFromDb.setPrice(createBookRequestDto.getPrice());
+        bookFromDb.setTitle(createBookRequestDto.getTitle());
+        bookFromDb.setCoverImage(createBookRequestDto.getCoverImage());
+        bookFromDb.setDescription(createBookRequestDto.getDescription());
         return bookMapper.toDto(bookRepository.save(bookFromDb));
     }
 

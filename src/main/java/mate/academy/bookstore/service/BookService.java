@@ -6,15 +6,15 @@ import mate.academy.bookstore.dto.BookSearchParametersDto;
 import mate.academy.bookstore.dto.CreateBookRequestDto;
 
 public interface BookService {
-    BookDto save(CreateBookRequestDto dto);
+    BookDto save(CreateBookRequestDto createBookRequestDto);
 
     List<BookDto> findAll();
 
     BookDto findById(Long id);
 
-    BookDto update(Long id, CreateBookRequestDto dto);
+    BookDto update(Long id, CreateBookRequestDto createBookRequestDto);
 
     void delete(Long id);
 
-    List<BookDto> searchBooks(BookSearchParametersDto searchParameters);
+    List<BookDto> searchBooks(BookSearchParametersDto searchParametersDto);
 }

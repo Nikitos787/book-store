@@ -23,8 +23,8 @@ public class BookController {
     private final BookService bookService;
 
     @PostMapping
-    public BookDto save(@RequestBody @Valid CreateBookRequestDto dto) {
-        return bookService.save(dto);
+    public BookDto save(@RequestBody CreateBookRequestDto createBookRequestDto) {
+        return bookService.save(createBookRequestDto);
     }
 
     @GetMapping
@@ -38,14 +38,14 @@ public class BookController {
     }
 
     @GetMapping("/search")
-    public List<BookDto> searchBooks(BookSearchParametersDto searchParameters) {
-        return bookService.searchBooks(searchParameters);
+    public List<BookDto> searchBooks(BookSearchParametersDto searchParametersDto) {
+        return bookService.searchBooks(searchParametersDto);
     }
 
     @PutMapping("/{id}")
     public BookDto update(@PathVariable Long id,
-                          @RequestBody @Valid CreateBookRequestDto dto) {
-        return bookService.update(id, dto);
+                          @RequestBody CreateBookRequestDto createBookRequestDto) {
+        return bookService.update(id, createBookRequestDto);
     }
 
     @DeleteMapping("/{id}")

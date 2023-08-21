@@ -19,6 +19,6 @@ public class BookSpecificationProviderManager implements SpecificationProviderMa
                 .filter(sp -> sp.getKey().equals(key))
                 .findFirst()
                 .orElseThrow(() -> new NoSuchElementException(
-                        String.format("Specification provider does not exsist for key: %s", key)));
+                        String.format("Specification provider does not exist for key: %s", key)));
     }
 }
