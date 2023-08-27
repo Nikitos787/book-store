@@ -7,14 +7,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import project.bookstore.dto.BookDto;
+import project.bookstore.dto.BookDtoWithoutCategoryIds;
 import project.bookstore.dto.BookSearchParametersDto;
+import project.bookstore.dto.CategoryDto;
 import project.bookstore.dto.CreateBookRequestDto;
 import project.bookstore.exception.EntityNotFoundException;
 import project.bookstore.mapper.BookMapper;
+import project.bookstore.mapper.CategoryMapper;
 import project.bookstore.model.Book;
 import project.bookstore.repository.book.BookRepository;
 import project.bookstore.repository.book.BookSpecificationBuilder;
 import project.bookstore.service.BookService;
+import project.bookstore.service.CategoryService;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +26,8 @@ public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
     private final BookMapper bookMapper;
     private final BookSpecificationBuilder bookSpecificationBuilder;
+    private final CategoryMapper categoryMapper;
+    private final CategoryService categoryService;
 
     @Override
     public BookDto save(CreateBookRequestDto createBookRequestDto) {
@@ -32,7 +38,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookDto> findAll(Pageable pageable) {
-        return bookRepository.findAll(pageable).stream()
+        return bookRepository.findAllWithCategories(pageable).stream()
                 .map(bookMapper::toDto)
                 .toList();
     }
@@ -51,7 +57,30 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public BookDto update(Long id, CreateBookRequestDto createBookRequestDto) {
+    public List<BookDtoWithoutCategoryIds> findAllByCategoryId(Long categoryId, Pageable pageable) {
+        return bookRepository.findAllByCategoryId(categoryId, pageable).stream()
+                .map(bookMapper::toDtoWithoutCategories)
+                .toList();
+    }
+
+    @Override
+    public void addBookToCategory(Long bookId, Long categoryId) {
+        Book bookModelFromDb = getBookModelFromDb(bookId);
+        CategoryDto categoryDto = categoryService.findById(categoryId);
+        bookModelFromDb.getCategories().add(categoryMapper.toModel(categoryDto));
+        bookRepository.save(bookModelFromDb);
+    }
+
+    @Override
+    public void removeCategoryFromBook(Long bookId, Long categoryId) {
+        Book bookModelFromDb = getBookModelFromDb(bookId);
+        CategoryDto categoryDto = categoryService.findById(categoryId);
+        bookModelFromDb.getCategories().remove(categoryMapper.toModel(categoryDto));
+        bookRepository.save(bookModelFromDb);
+    }
+
+    @Override
+    public BookDto updateInfo(Long id, CreateBookRequestDto createBookRequestDto) {
         Book bookFromDb = getBookModelFromDb(id);
         bookFromDb.setAuthor(createBookRequestDto.getAuthor());
         bookFromDb.setPrice(createBookRequestDto.getPrice());
