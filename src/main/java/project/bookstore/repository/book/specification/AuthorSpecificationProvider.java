@@ -8,12 +8,15 @@ import project.bookstore.repository.SpecificationProvider;
 
 @Component
 public class AuthorSpecificationProvider implements SpecificationProvider<Book> {
+    private static final String JOIN_TABLE = "categories";
     private static final String AUTHOR_KEY_FIELD = "author";
 
     @Override
     public Specification<Book> getSpecification(String[] params) {
-        return (root, query, criteriaBuilder) ->
-                root.get(AUTHOR_KEY_FIELD).in(Arrays.stream(params).toArray());
+        return (root, query, criteriaBuilder) -> {
+            root.fetch(JOIN_TABLE);
+            return root.get(AUTHOR_KEY_FIELD).in(Arrays.stream(params).toArray());
+        };
     }
 
     @Override
