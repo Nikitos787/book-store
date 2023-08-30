@@ -15,4 +15,3 @@ databaseChangeLog:
               - column:
                   name: role_name
                   value: 'ROLE_USER'
-

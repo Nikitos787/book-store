@@ -7,7 +7,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -25,11 +25,14 @@ import project.bookstore.service.BookService;
 @RequestMapping("/api/books")
 @RequiredArgsConstructor
 public class BookController {
+    private static final String ADMIN = "ROLE_ADMIN";
+    private static final String USER = "ROLE_USER";
+
     private final BookService bookService;
 
     @PostMapping
     @Operation(summary = "Create new book in db")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Secured(ADMIN)
     public BookDto save(@RequestBody @Valid
                         @Parameter(schema = @Schema(implementation = CreateBookRequestDto.class))
                         CreateBookRequestDto createBookRequestDto) {
@@ -39,21 +42,21 @@ public class BookController {
     @GetMapping
     @Operation(summary = "Get all books from db.",
             description = "You can use pagination and sorting")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Secured({ADMIN, USER})
     public List<BookDto> findAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get book by id")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Secured({ADMIN, USER})
     public BookDto findById(@PathVariable @Parameter(description = "Book id") Long id) {
         return bookService.findById(id);
     }
 
     @GetMapping("/search")
     @Operation(summary = "Get books by parameters")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Secured({ADMIN, USER})
     public List<BookDto> searchBooks(@Parameter(schema = @Schema(
             implementation = BookSearchParametersDto.class))
                                      BookSearchParametersDto searchParametersDto) {
@@ -62,7 +65,7 @@ public class BookController {
 
     @PutMapping("/{id}")
     @Operation(summary = "Update info about book")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Secured(ADMIN)
     public BookDto update(@PathVariable
                           @Parameter(description = "Book id") Long id,
                           @RequestBody @Valid
@@ -73,7 +76,7 @@ public class BookController {
 
     @DeleteMapping("/{id}")
     @Operation(summary = "Delete book from db", description = "Implement safe delete approach")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Secured(ADMIN)
     public void delete(@PathVariable
                        @Parameter(description = "Book id") Long id) {
         bookService.delete(id);
