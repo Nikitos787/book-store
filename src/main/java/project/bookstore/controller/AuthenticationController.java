@@ -24,8 +24,8 @@ import project.bookstore.security.AuthenticationService;
 public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
-    @Operation(summary = "endpoint for authentication")
     @PostMapping("/login")
+    @Operation(summary = "endpoint for authentication")
     public UserLoginResponseDto login(@RequestBody
                                       @Valid
                                       @Parameter(schema =
@@ -34,8 +34,8 @@ public class AuthenticationController {
         return authenticationService.authenticate(request);
     }
 
-    @Operation(summary = "endpoint for registration new user")
     @PostMapping("/registration")
+    @Operation(summary = "endpoint for registration new user")
     public UserResponseDto register(@RequestBody
                                     @Valid
                                     @Parameter(schema =
