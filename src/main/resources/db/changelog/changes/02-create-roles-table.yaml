@@ -19,3 +19,9 @@ databaseChangeLog:
                   constraints:
                     nullable: false
                     unique: true
+              - column:
+                  name: is_deleted
+                  type: TINYINT(1)
+                  defaultValue: 0
+                  constraints:
+                    nullable: false

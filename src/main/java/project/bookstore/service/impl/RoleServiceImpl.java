@@ -23,4 +23,9 @@ public class RoleServiceImpl implements RoleService {
                 new EntityNotFoundException(String
                         .format("Role with such name: %s does not exist in DB", roleName.name())));
     }
+
+    @Override
+    public void delete(Long id) {
+        roleRepository.deleteById(id);
+    }
 }

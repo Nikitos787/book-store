@@ -1,0 +1,55 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-categories-to-db
+      author: nikitos
+      changes:
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: 'Drama'
+              - column:
+                  name: description
+                  value: "For people who can't find a job"
+        - insert:
+            tableName: categories
+            columns:
+              - column:
+                  name: name
+                  value: 'Comedy'
+              - column:
+                  name: description
+                  value: "For people who can't find a job"
+
+  - changeSet:
+      id: insert-book-to-category-to-db
+      author: nikitos
+      changes:
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  value: 1
+              - column:
+                  name: category_id
+                  value: 1
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  value: 2
+              - column:
+                  name: category_id
+                  value: 2
+        - insert:
+            tableName: books_categories
+            columns:
+              - column:
+                  name: book_id
+                  value: 3
+              - column:
+                  name: category_id
+                  value: 1

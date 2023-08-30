@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-table
+      id: create-cart-items-table
       author: nikitos
       changes:
         - createTable:
-            tableName: users
+            tableName: cart_items
             columns:
               - column:
                   name: id
@@ -14,29 +14,18 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: email
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: password
-                  type: varchar(255)
+                  name: shopping_cart_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: first_name
-                  type: varchar(255)
+                  name: book_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-              - column:
-                  name: shipping_address
-                  type: varchar(255)
+                  name: quantity
+                  type: INTEGER
                   constraints:
                     nullable: false
               - column:
@@ -45,4 +34,15 @@ databaseChangeLog:
                   defaultValue: 0
                   constraints:
                     nullable: false
-
+        - addForeignKeyConstraint:
+            baseTableName: cart_items
+            baseColumnNames: shopping_cart_id
+            referencedTableName: shopping_carts
+            constraintName: fk-shopcart-cart-items-shopping-carts
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: cart_items
+            baseColumnNames: book_id
+            referencedTableName: books
+            constraintName: fk-book-cart-items-books
+            referencedColumnNames: id

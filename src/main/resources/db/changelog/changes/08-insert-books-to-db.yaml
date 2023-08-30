@@ -24,3 +24,45 @@ databaseChangeLog:
               - column:
                   name: cover_image
                   value: "google.com"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: 'Bible'
+              - column:
+                  name: author
+                  value: 'Jesus'
+              - column:
+                  name: isbn
+                  value: 'osososososososddsf'
+              - column:
+                  name: price
+                  value: 9.99
+              - column:
+                  name: description
+                  value: "For churches"
+              - column:
+                  name: cover_image
+                  value: "google.com"
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: 'Abetka'
+              - column:
+                  name: author
+                  value: 'Ivan Franko'
+              - column:
+                  name: isbn
+                  value: 'dssdsdsff'
+              - column:
+                  name: price
+                  value: 91.99
+              - column:
+                  name: description
+                  value: "For kids"
+              - column:
+                  name: cover_image
+                  value: "google.com"
