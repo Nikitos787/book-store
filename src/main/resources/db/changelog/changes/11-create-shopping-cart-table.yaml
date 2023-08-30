@@ -29,16 +29,3 @@ databaseChangeLog:
             constraintName: fk_user_shopping_carts
             referencedTableName: users
             referencedColumnNames: id
-
-
-
-
-
-
-
-
-
-
-        #create table shopping_carts (id bigint not null, primary key (id))
-#
-#Hibernate: create table car_items (quantity integer not null, book_id bigint not null, id bigint not null auto_increment, shopping_cart_id bigint not null, primary key (id)) engine=InnoDB
