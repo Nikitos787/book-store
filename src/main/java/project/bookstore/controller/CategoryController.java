@@ -8,7 +8,7 @@ import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,12 +27,15 @@ import project.bookstore.service.CategoryService;
 @RequiredArgsConstructor
 @RequestMapping("/api/categories")
 public class CategoryController {
+    private static final String ADMIN = "ROLE_ADMIN";
+    private static final String USER = "ROLE_USER";
+
     private final CategoryService categoryService;
     private final BookService bookService;
 
-    @Operation(summary = "Create new category in db")
     @PostMapping
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Operation(summary = "Create new category in db")
+    @Secured(ADMIN)
     public CategoryDto createCategory(@RequestBody @Valid
                                       @Parameter(schema =
                                       @Schema(implementation = CategoryDto.class))
@@ -40,24 +43,24 @@ public class CategoryController {
         return categoryService.save(categoryDto);
     }
 
+    @GetMapping
     @Operation(summary = "endpoint for get all categories from db",
             description = "You can use pagination and sorting")
-    @GetMapping
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Secured({ADMIN, USER})
     public List<CategoryDto> getAll(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
-    @Operation(summary = "Get category by id")
     @GetMapping("/{id}")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Operation(summary = "Get category by id")
+    @Secured({ADMIN, USER})
     public CategoryDto findById(@PathVariable @Parameter(description = "Category Id") Long id) {
         return categoryService.findById(id);
     }
 
-    @Operation(summary = "endpoint for update category")
     @PutMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Operation(summary = "endpoint for update category")
+    @Secured(ADMIN)
     public CategoryDto updateCategory(@PathVariable
                                       @Parameter(description = "Category Id") Long id,
                                       @RequestBody
@@ -67,18 +70,18 @@ public class CategoryController {
         return categoryService.update(id, categoryDto);
     }
 
-    @Operation(summary = "Delete category from db", description = "Implement safe delete approach")
     @DeleteMapping("/{id}")
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Operation(summary = "Delete category from db", description = "Implement safe delete approach")
+    @Secured(ADMIN)
     public void delete(@PathVariable
                        @Parameter(description = "Category Id")
                        Long id) {
         categoryService.delete(id);
     }
 
-    @Operation(summary = "endpoint for getting all books by category id")
     @GetMapping("/{id}/books")
-    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_USER')")
+    @Operation(summary = "endpoint for getting all books by category id")
+    @Secured({ADMIN, USER})
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable
                                                                 @Parameter(
                                                                         description = "Category Id")

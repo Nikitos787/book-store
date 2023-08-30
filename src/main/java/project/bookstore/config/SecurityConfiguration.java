@@ -16,7 +16,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import project.bookstore.security.JwtAuthenticationFilter;
 
 @EnableWebSecurity
-@EnableMethodSecurity
+@EnableMethodSecurity(securedEnabled = true)
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfiguration {

@@ -19,5 +19,6 @@ public interface CartItemMapper {
     @Mapping(source = "bookId", target = "book.id")
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "shoppingCartId", target = "shoppingCart.id")
+    @Mapping(ignore = true, target = "deleted")
     CartItem toModel(CartItemRequestDto cartItemRequestDto);
 }

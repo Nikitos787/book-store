@@ -27,12 +27,15 @@ import project.bookstore.service.ShoppingCartService;
 @RequiredArgsConstructor
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
+    private static final String ADMIN = "ROLE_ADMIN";
+    private static final String USER = "ROLE_USER";
+
     private final ShoppingCartService shoppingCartService;
     private final CartItemService cartItemService;
 
     @PostMapping
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "endpoint for add book to shopping cart")
+    @Secured({ADMIN, USER})
     public ShoppingCartResponseDto addBookToShoppingCart(
             @RequestBody
             @Parameter(schema = @Schema(implementation = CartItemRequestDto.class))
@@ -44,16 +47,16 @@ public class ShoppingCartController {
     }
 
     @GetMapping
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "endpoint for getting own shopping cart")
+    @Secured({ADMIN, USER})
     public ShoppingCartResponseDto getMyShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.findByUser(user);
     }
 
     @PutMapping("/cart-items/{cartItemId}")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "endpoint for update quantity of book in shopping cart")
+    @Secured({ADMIN, USER})
     public ShoppingCartResponseDto updateQuantity(
             @PathVariable
             @Parameter(description = "Cart item id")
@@ -68,8 +71,8 @@ public class ShoppingCartController {
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
-    @Secured({"ROLE_ADMIN", "ROLE_USER"})
     @Operation(summary = "endpoint for remove book from shopping cart")
+    @Secured({ADMIN, USER})
     public ShoppingCartResponseDto removeBookFromShoppingCart(
             @PathVariable
             @Parameter(description = "Cart item id") Long cartItemId,
