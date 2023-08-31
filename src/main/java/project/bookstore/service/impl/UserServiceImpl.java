@@ -43,17 +43,4 @@ public class UserServiceImpl implements UserService {
                 new EntityNotFoundException(String
                         .format("Can't find user with email: %s in DB", email)));
     }
-
-    @Override
-    public void delete(Long id) {
-        shoppingCartService.delete(id);
-        userRepository.deleteById(id);
-    }
-
-    @Override
-    public User findById(Long id) {
-        return userRepository.findById(id).orElseThrow(() ->
-                new EntityNotFoundException(
-                        String.format("Can't find user by id: %s", id)));
-    }
 }

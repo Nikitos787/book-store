@@ -53,13 +53,19 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
-    public void delete(Long id) {
-        shoppingCartRepository.deleteById(id);
-    }
-
-    private ShoppingCart getModelById(Long id) {
+    public ShoppingCart getModelById(Long id) {
         return shoppingCartRepository.findByUserId(id).orElseThrow(() ->
                 new EntityNotFoundException(String.format(
                         "Can't find shop cart by user with id: %s", id)));
+    }
+
+    @Override
+    public void clearShoppingCart(User user) {
+        ShoppingCart shoppingCart = getModelById(user.getId());
+        for (CartItem cartItem : shoppingCart.getCartItems()) {
+            cartItemService.delete(cartItem.getId());
+        }
+        shoppingCart.setCartItems(null);
+        shoppingCartRepository.save(shoppingCart);
     }
 }
