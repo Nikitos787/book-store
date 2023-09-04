@@ -1,6 +1,5 @@
 package project.bookstore.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -50,7 +49,6 @@ public class Order {
     @OneToMany(mappedBy = "order", fetch = FetchType.LAZY)
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
-    @JsonManagedReference
     private Set<OrderItem> orderItems;
     @Column(name = "is_deleted", nullable = false)
     private boolean isDeleted = false;
