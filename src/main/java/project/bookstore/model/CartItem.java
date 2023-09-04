@@ -1,6 +1,5 @@
 package project.bookstore.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -27,7 +26,6 @@ public class CartItem {
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shopping_cart_id", nullable = false)
-    @JsonBackReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private ShoppingCart shoppingCart;

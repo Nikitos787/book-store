@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import project.bookstore.dto.OrderItemResponseDto;
 import project.bookstore.mapper.OrderItemMapper;
 import project.bookstore.model.OrderItem;
-import project.bookstore.model.User;
 import project.bookstore.repository.OrderItemRepository;
 import project.bookstore.service.OrderItemService;
 
@@ -22,8 +21,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     }
 
     @Override
-    public List<OrderItemResponseDto> findByOrderId(Long orderId, User user) {
-        return orderItemRepository.findAllByOrderId(orderId, user.getId()).stream()
+    public List<OrderItemResponseDto> findByOrderId(Long orderId, Long userId) {
+        return orderItemRepository.findAllByOrderId(orderId, userId).stream()
                 .map(orderItemMapper::toDto)
                 .toList();
     }
@@ -31,8 +30,8 @@ public class OrderItemServiceImpl implements OrderItemService {
     @Override
     public OrderItemResponseDto findParticularOrderItemByOrderId(Long orderId,
                                                                  Long orderItemId,
-                                                                 User user) {
-        return findByOrderId(orderId, user).stream()
+                                                                 Long userId) {
+        return findByOrderId(orderId, userId).stream()
                 .filter(orderItem -> orderItem.getId().equals(orderItemId))
                 .findFirst()
                 .orElseThrow();

@@ -18,6 +18,7 @@ import project.bookstore.model.OrderItem;
 import project.bookstore.model.ShoppingCart;
 import project.bookstore.model.User;
 import project.bookstore.repository.OrderRepository;
+import project.bookstore.repository.UserRepository;
 import project.bookstore.service.OrderItemService;
 import project.bookstore.service.OrderService;
 import project.bookstore.service.ShoppingCartService;
@@ -29,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private final ShoppingCartService shoppingCartService;
     private final OrderItemService orderItemService;
     private final OrderMapper orderMapper;
+    private final UserRepository userRepository;
 
     @Override
     public OrderResponseDto changeStatus(Long id, StatusDto statusdto) {
@@ -39,17 +41,17 @@ public class OrderServiceImpl implements OrderService {
 
     @Transactional
     @Override
-    public OrderResponseDto save(User user) {
-        Order savedOrderWithoutItems = createInitialOrderInDb(user);
+    public OrderResponseDto save(Long userId) {
+        Order savedOrderWithoutItems = createInitialOrderInDb(userId);
 
-        ShoppingCart shoppingCart = shoppingCartService.getModelById(user.getId());
+        ShoppingCart shoppingCart = shoppingCartService.getModelById(userId);
 
         Set<OrderItem> orderItemsForOrder =
                 createOrderItemsForOrder(savedOrderWithoutItems, shoppingCart);
         savedOrderWithoutItems.setOrderItems(orderItemsForOrder);
 
         savedOrderWithoutItems.setTotal(calculateTotal(orderItemsForOrder));
-        shoppingCartService.clearShoppingCart(user);
+        shoppingCartService.clearShoppingCart(userId);
         return orderMapper.toDto(orderRepository.save(savedOrderWithoutItems));
     }
 
@@ -62,20 +64,27 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public List<OrderResponseDto> findAllOrderHistoryByUser(User user) {
-        return orderRepository.findByUser(user.getId()).stream()
+    public List<OrderResponseDto> findAllOrderHistoryByUser(Long userId) {
+        return orderRepository.findByUser(userId).stream()
                 .map(orderMapper::toDto)
                 .toList();
     }
 
-    private Order createInitialOrderInDb(User user) {
+    private Order createInitialOrderInDb(Long userId) {
         Order order = new Order();
         order.setOrderDate(LocalDateTime.now());
         order.setStatus(Order.Status.PENDING);
+        User user = getUserFromDb(userId);
         order.setUser(user);
         order.setShippingAddress(user.getShippingAddress());
         order.setTotal(BigDecimal.ZERO);
         return orderRepository.save(order);
+    }
+
+    private User getUserFromDb(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() ->
+                new EntityNotFoundException(
+                        String.format("Can't find user from db with id: %s", userId)));
     }
 
     private Set<OrderItem> createOrderItemsForOrder(Order order, ShoppingCart shoppingCart) {

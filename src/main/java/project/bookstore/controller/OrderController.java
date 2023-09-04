@@ -38,7 +38,7 @@ public class OrderController {
     @Secured({ADMIN, USER})
     public OrderResponseDto save(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.save(user);
+        return orderService.save(user.getId());
     }
 
     @GetMapping
@@ -46,7 +46,7 @@ public class OrderController {
     @Secured({ADMIN, USER})
     public List<OrderResponseDto> findAll(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.findAllOrderHistoryByUser(user);
+        return orderService.findAllOrderHistoryByUser(user.getId());
     }
 
     @GetMapping("/{orderId}/items")
@@ -57,7 +57,7 @@ public class OrderController {
                                                     Long orderId,
                                                     Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderItemService.findByOrderId(orderId, user);
+        return orderItemService.findByOrderId(orderId, user.getId());
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
@@ -71,7 +71,7 @@ public class OrderController {
                                               Long itemId,
                                               Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderItemService.findParticularOrderItemByOrderId(orderId, itemId, user);
+        return orderItemService.findParticularOrderItemByOrderId(orderId, itemId, user.getId());
     }
 
     @PatchMapping("/{orderId}")
