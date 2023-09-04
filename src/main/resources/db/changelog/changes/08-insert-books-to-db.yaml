@@ -1,0 +1,26 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-books-to-db
+      author: nikitos
+      changes:
+        - insert:
+            tableName: books
+            columns:
+              - column:
+                  name: title
+                  value: 'How to find job for junior developers'
+              - column:
+                  name: author
+                  value: 'Nikita Salohub'
+              - column:
+                  name: isbn
+                  value: 'idididiidididiidid'
+              - column:
+                  name: price
+                  value: 10.99
+              - column:
+                  name: description
+                  value: "Super Book"
+              - column:
+                  name: cover_image
+                  value: "google.com"
