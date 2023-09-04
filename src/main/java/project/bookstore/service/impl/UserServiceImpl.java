@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
         if (userRepository.findByEmail(userRegistrationRequestDto.getEmail()).isPresent()) {
             throw new RegistrationException(
                     String.format("User with such email: %s already exist in db",
-                    userRegistrationRequestDto.getEmail()));
+                            userRegistrationRequestDto.getEmail()));
         }
         User user = userMapper.toModel(userRegistrationRequestDto);
         user.setRoles(Set.of(roleService.findByRoleName(Role.RoleName.ROLE_USER)));
@@ -45,5 +45,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findByEmail(email).orElseThrow(() ->
                 new EntityNotFoundException(String
                         .format("Can't find user with email: %s in DB", email)));
+    }
+
+    @Override
+    public User findById(Long id) {
+        return userRepository.findById(id).orElseThrow(() ->
+                new EntityNotFoundException(
+                        String.format("Can't find user by user id: %s", id)));
     }
 }

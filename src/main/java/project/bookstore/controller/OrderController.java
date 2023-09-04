@@ -19,7 +19,6 @@ import project.bookstore.dto.OrderItemResponseDto;
 import project.bookstore.dto.OrderResponseDto;
 import project.bookstore.dto.StatusDto;
 import project.bookstore.model.User;
-import project.bookstore.service.OrderItemService;
 import project.bookstore.service.OrderService;
 
 @Tag(name = "Order management", description = "endpoints for managing orders")
@@ -31,14 +30,13 @@ public class OrderController {
     private static final String USER = "ROLE_USER";
 
     private final OrderService orderService;
-    private final OrderItemService orderItemService;
 
     @PostMapping
     @Operation(summary = "endpoint for submit your order and clear your shopping cart")
     @Secured({ADMIN, USER})
     public OrderResponseDto save(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.save(user.getId());
+        return orderService.saveOrder(user.getId());
     }
 
     @GetMapping
@@ -46,7 +44,7 @@ public class OrderController {
     @Secured({ADMIN, USER})
     public List<OrderResponseDto> findAll(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.findAllOrderHistoryByUser(user.getId());
+        return orderService.findAllOrdersHistoryByUser(user.getId());
     }
 
     @GetMapping("/{orderId}/items")
@@ -57,7 +55,7 @@ public class OrderController {
                                                     Long orderId,
                                                     Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderItemService.findByOrderId(orderId, user.getId());
+        return orderService.findOrderItemsByOrderId(orderId, user.getId());
     }
 
     @GetMapping("/{orderId}/items/{itemId}")
@@ -71,7 +69,7 @@ public class OrderController {
                                               Long itemId,
                                               Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderItemService.findParticularOrderItemByOrderId(orderId, itemId, user.getId());
+        return orderService.findParticularOrderItemByOrderId(orderId, itemId, user.getId());
     }
 
     @PatchMapping("/{orderId}")
@@ -84,6 +82,6 @@ public class OrderController {
                                          @Parameter(schema =
                                          @Schema(implementation = StatusDto.class))
                                          StatusDto statusDto) {
-        return orderService.changeStatus(orderId, statusDto);
+        return orderService.changeOrderStatus(orderId, statusDto);
     }
 }
