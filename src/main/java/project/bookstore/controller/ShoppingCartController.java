@@ -19,7 +19,6 @@ import project.bookstore.dto.CartItemRequestDto;
 import project.bookstore.dto.ShoppingCartResponseDto;
 import project.bookstore.dto.ShoppingCartUpdateQuantityRequestDto;
 import project.bookstore.model.User;
-import project.bookstore.service.CartItemService;
 import project.bookstore.service.ShoppingCartService;
 
 @Tag(name = "ShoppingCart management", description = "endpoints for managing shopping carts")
@@ -31,7 +30,6 @@ public class ShoppingCartController {
     private static final String USER = "ROLE_USER";
 
     private final ShoppingCartService shoppingCartService;
-    private final CartItemService cartItemService;
 
     @PostMapping
     @Operation(summary = "endpoint for add book to shopping cart")
@@ -51,7 +49,7 @@ public class ShoppingCartController {
     @Secured({ADMIN, USER})
     public ShoppingCartResponseDto getMyShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return shoppingCartService.findByUser(user);
+        return shoppingCartService.findByUser(user.getId());
     }
 
     @PutMapping("/cart-items/{cartItemId}")
@@ -66,8 +64,9 @@ public class ShoppingCartController {
             @RequestBody
             ShoppingCartUpdateQuantityRequestDto dto,
             Authentication authentication) {
-        cartItemService.update(cartItemId, dto.getQuantity());
-        return shoppingCartService.findByUser((User) authentication.getPrincipal());
+        shoppingCartService.updateCartItemQuantity(cartItemId, dto);
+        User user = (User) authentication.getPrincipal();
+        return shoppingCartService.findByUser(user.getId());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
@@ -77,7 +76,8 @@ public class ShoppingCartController {
             @PathVariable
             @Parameter(description = "Cart item id") Long cartItemId,
             Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
         return shoppingCartService.removeBookFromShoppingCart(cartItemId,
-                (User) authentication.getPrincipal());
+                user.getId());
     }
 }

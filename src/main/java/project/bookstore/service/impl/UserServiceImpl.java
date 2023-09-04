@@ -3,6 +3,7 @@ package project.bookstore.service.impl;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import project.bookstore.dto.UserRegistrationRequestDto;
 import project.bookstore.dto.UserResponseDto;
 import project.bookstore.exception.EntityNotFoundException;
@@ -23,6 +24,7 @@ public class UserServiceImpl implements UserService {
     private final RoleService roleService;
     private final ShoppingCartService shoppingCartService;
 
+    @Transactional
     @Override
     public UserResponseDto save(UserRegistrationRequestDto userRegistrationRequestDto)
             throws RegistrationException {
@@ -33,8 +35,9 @@ public class UserServiceImpl implements UserService {
         }
         User user = userMapper.toModel(userRegistrationRequestDto);
         user.setRoles(Set.of(roleService.findByRoleName(Role.RoleName.ROLE_USER)));
-        shoppingCartService.save(user);
-        return userMapper.toDto(userRepository.save(user));
+        User savedUser = userRepository.save(user);
+        shoppingCartService.save(savedUser.getId());
+        return userMapper.toDto(savedUser);
     }
 
     @Override

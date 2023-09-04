@@ -1,10 +1,11 @@
 package project.bookstore.model;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
@@ -25,6 +26,7 @@ import org.hibernate.annotations.Where;
 @Where(clause = "is_deleted = false")
 public class ShoppingCart {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @MapsId
     @OneToOne(cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
@@ -33,7 +35,6 @@ public class ShoppingCart {
     @EqualsAndHashCode.Exclude
     private User user;
     @OneToMany(mappedBy = "shoppingCart", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JsonManagedReference
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<CartItem> cartItems;
