@@ -11,9 +11,8 @@ import project.bookstore.dto.BookDtoWithoutCategoryIds;
 import project.bookstore.dto.CreateBookRequestDto;
 import project.bookstore.model.Book;
 import project.bookstore.model.Category;
-import project.bookstore.service.CategoryService;
 
-@Mapper(config = MapperConfig.class, uses = {CategoryMapper.class, CategoryService.class})
+@Mapper(config = MapperConfig.class)
 public interface BookMapper {
     BookDto toDto(Book book);
 
