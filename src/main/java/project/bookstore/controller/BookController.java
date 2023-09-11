@@ -71,7 +71,7 @@ public class BookController {
                           @RequestBody @Valid
                           @Parameter(schema = @Schema(implementation = CreateBookRequestDto.class))
                           CreateBookRequestDto createBookRequestDto) {
-        return bookService.updateInfo(id, createBookRequestDto);
+        return bookService.update(id, createBookRequestDto);
     }
 
     @DeleteMapping("/{id}")
@@ -80,25 +80,5 @@ public class BookController {
     public void delete(@PathVariable
                        @Parameter(description = "Book id") Long id) {
         bookService.delete(id);
-    }
-
-    @PutMapping("/{bookId}/categories/{categoryId}")
-    @Operation(summary = "Add category to book from db")
-    @Secured(ADMIN)
-    public void addCategoryToBook(@PathVariable
-                                  @Parameter(description = "Book id") Long bookId,
-                                  @PathVariable
-                                  @Parameter(description = "Category id") Long categoryId) {
-        bookService.addBookToCategory(bookId, categoryId);
-    }
-
-    @DeleteMapping("/{bookId}/categories/{categoryId}")
-    @Operation(summary = "remove category from book from db")
-    @Secured(ADMIN)
-    public void removeCategoryToBook(@PathVariable
-                                     @Parameter(description = "Book id") Long bookId,
-                                     @PathVariable
-                                     @Parameter(description = "Category id") Long categoryId) {
-        bookService.removeCategoryFromBook(bookId, categoryId);
     }
 }
