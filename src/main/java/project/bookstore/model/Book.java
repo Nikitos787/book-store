@@ -51,7 +51,7 @@ public class Book {
     private Set<Category> categories = new HashSet<>();
 
     @PrePersist
-    void setIsbn() {
+    private void setIsbn() {
         isbn = UUID.randomUUID().toString();
     }
 }
