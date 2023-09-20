@@ -10,4 +10,8 @@ public interface UserService {
             throws RegistrationException;
 
     User findByEmail(String email);
+
+    void delete(Long id);
+
+    User findById(Long id);
 }
