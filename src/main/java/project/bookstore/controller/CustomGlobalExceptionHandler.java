@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import project.bookstore.exception.EntityNotFoundException;
+import project.bookstore.exception.OperationException;
 import project.bookstore.exception.RegistrationException;
 
 @ControllerAdvice
@@ -43,6 +44,11 @@ public class CustomGlobalExceptionHandler extends ResponseEntityExceptionHandler
 
     @ExceptionHandler(RegistrationException.class)
     public ResponseEntity<Object> handleEntityNotFoundException(RegistrationException exception) {
+        return getObjectResponseEntity(exception);
+    }
+
+    @ExceptionHandler(OperationException.class)
+    public ResponseEntity<Object> handleOperationException(OperationException exception) {
         return getObjectResponseEntity(exception);
     }
 

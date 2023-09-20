@@ -2,6 +2,7 @@ package project.bookstore.repository;
 
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -22,5 +23,5 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             + "LEFT JOIN FETCH o.orderItems oi "
             + "LEFT JOIN FETCH oi.book "
             + "WHERE u.id = :id")
-    List<Order> findByUser(@Param("id") Long userId);
+    List<Order> findByUser(@Param("id") Long userId, Pageable pageable);
 }

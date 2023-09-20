@@ -7,6 +7,7 @@ import project.bookstore.dto.CartItemRequestDto;
 import project.bookstore.dto.ShoppingCartResponseDto;
 import project.bookstore.dto.ShoppingCartUpdateQuantityRequestDto;
 import project.bookstore.exception.EntityNotFoundException;
+import project.bookstore.exception.OperationException;
 import project.bookstore.mapper.CartItemMapper;
 import project.bookstore.mapper.ShoppingCartMapper;
 import project.bookstore.model.CartItem;
@@ -51,8 +52,15 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public ShoppingCartResponseDto removeBookFromShoppingCart(Long cartItemId, Long userId) {
-        cartItemRepository.deleteById(cartItemId);
-        return findByUser(userId);
+        if (isSuitableShoppingCart(cartItemId, userId)) {
+            cartItemRepository.deleteById(cartItemId);
+            return findByUser(userId);
+        }
+        throw new OperationException(
+                String.format(
+                        "It's impossible to remove book not from your own shopping cart. "
+                                + "This cart item with id: %s is situated in another shopping cart",
+                        cartItemId));
     }
 
     @Override
@@ -79,10 +87,18 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
 
     @Override
     public void updateCartItemQuantity(Long cartItemId,
-                                       ShoppingCartUpdateQuantityRequestDto quantityRequestDto) {
-        CartItem cartItem = getCartItemByIdFromDb(cartItemId);
-        cartItem.setQuantity(quantityRequestDto.getQuantity());
-        cartItemRepository.save(cartItem);
+                                       ShoppingCartUpdateQuantityRequestDto quantityRequestDto,
+                                       Long userId) {
+        if (isSuitableShoppingCart(cartItemId, userId)) {
+            CartItem cartItem = getCartItemByIdFromDb(cartItemId);
+            cartItem.setQuantity(quantityRequestDto.getQuantity());
+            cartItemRepository.save(cartItem);
+        }
+        throw new OperationException(
+                String.format(
+                        "It's impossible to update quantity of cart item "
+                                + "if this cart item with id: %s is belong to another (not yours)"
+                                + " shopping cart", cartItemId));
     }
 
     private CartItem getCartItemByIdFromDb(Long cartItemId) {
@@ -95,5 +111,9 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
         return userRepository.findById(userId).orElseThrow(() ->
                 new EntityNotFoundException(
                         String.format("Can't find user by user id: %s", userId)));
+    }
+
+    private boolean isSuitableShoppingCart(Long cartItemId, Long userId) {
+        return getCartItemByIdFromDb(cartItemId).getShoppingCart().getId().equals(userId);
     }
 }

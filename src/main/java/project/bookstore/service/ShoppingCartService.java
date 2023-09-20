@@ -23,5 +23,6 @@ public interface ShoppingCartService {
     ShoppingCart getModelById(Long id);
 
     void updateCartItemQuantity(Long cartItemId,
-                                ShoppingCartUpdateQuantityRequestDto quantityRequestDto);
+                                ShoppingCartUpdateQuantityRequestDto quantityRequestDto,
+                                Long userId);
 }

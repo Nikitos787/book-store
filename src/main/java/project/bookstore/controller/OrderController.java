@@ -4,8 +4,10 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import project.bookstore.dto.OrderItemResponseDto;
+import project.bookstore.dto.OrderRequestDto;
 import project.bookstore.dto.OrderResponseDto;
 import project.bookstore.dto.StatusDto;
 import project.bookstore.model.User;
@@ -33,43 +36,46 @@ public class OrderController {
 
     @PostMapping
     @Operation(summary = "endpoint for submit your order and clear your shopping cart")
-    @Secured({ADMIN, USER})
-    public OrderResponseDto save(Authentication authentication) {
+    @Secured(USER)
+    public OrderResponseDto save(@RequestBody
+                                 @Valid OrderRequestDto requestDto,
+                                 Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.saveOrder(user.getId());
+        return orderService.saveOrder(user.getId(), requestDto.getShippingAddress());
     }
 
     @GetMapping
     @Operation(summary = "endpoint for get your own order history ")
-    @Secured({ADMIN, USER})
-    public List<OrderResponseDto> findAll(Authentication authentication) {
+    @Secured(USER)
+    public List<OrderResponseDto> findAll(Authentication authentication, Pageable pageable) {
         User user = (User) authentication.getPrincipal();
-        return orderService.findAllOrdersHistoryByUser(user.getId());
+        return orderService.findAllOrdersHistoryByUser(user.getId(), pageable);
     }
 
     @GetMapping("/{orderId}/items")
     @Operation(summary = "endpoint for get order items by particular order")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public List<OrderItemResponseDto> findByOrderId(@PathVariable
                                                     @Parameter(description = "Order id")
                                                     Long orderId,
-                                                    Authentication authentication) {
+                                                    Authentication authentication,
+                                                    Pageable pageable) {
         User user = (User) authentication.getPrincipal();
-        return orderService.findOrderItemsByOrderId(orderId, user.getId());
+        return orderService.findOrderItemsByOrderId(orderId, user.getId(), pageable);
     }
 
-    @GetMapping("/{orderId}/items/{itemId}")
+    @GetMapping("/{orderId}/items/{orderItemId}")
     @Operation(summary = "endpoint for get particular order item from particular order")
-    @Secured({ADMIN, USER})
-    public OrderItemResponseDto findByOrderId(@PathVariable
+    @Secured(USER)
+    public OrderItemResponseDto findParticularOrderItemByIdAndOrderId(@PathVariable
                                               @Parameter(description = "Order id")
                                               Long orderId,
                                               @PathVariable
                                               @Parameter(description = "order Item id")
-                                              Long itemId,
+                                              Long orderItemId,
                                               Authentication authentication) {
         User user = (User) authentication.getPrincipal();
-        return orderService.findParticularOrderItemByOrderId(orderId, itemId, user.getId());
+        return orderService.findParticularOrderItemByOrderId(orderId, orderItemId, user.getId());
     }
 
     @PatchMapping("/{orderId}")
