@@ -9,10 +9,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -51,4 +53,9 @@ public class Book {
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private Set<Category> categories = new HashSet<>();
+
+    @PrePersist
+    private void setIsbn() {
+        isbn = UUID.randomUUID().toString();
+    }
 }
