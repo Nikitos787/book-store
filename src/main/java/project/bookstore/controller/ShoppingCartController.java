@@ -26,14 +26,13 @@ import project.bookstore.service.ShoppingCartService;
 @RequiredArgsConstructor
 @RequestMapping("/api/cart")
 public class ShoppingCartController {
-    private static final String ADMIN = "ROLE_ADMIN";
     private static final String USER = "ROLE_USER";
 
     private final ShoppingCartService shoppingCartService;
 
     @PostMapping
     @Operation(summary = "endpoint for add book to shopping cart")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public ShoppingCartResponseDto addBookToShoppingCart(
             @RequestBody
             @Parameter(schema = @Schema(implementation = CartItemRequestDto.class))
@@ -46,7 +45,7 @@ public class ShoppingCartController {
 
     @GetMapping
     @Operation(summary = "endpoint for getting own shopping cart")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public ShoppingCartResponseDto getMyShoppingCart(Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.findByUser(user.getId());
@@ -54,7 +53,7 @@ public class ShoppingCartController {
 
     @PutMapping("/cart-items/{cartItemId}")
     @Operation(summary = "endpoint for update quantity of book in shopping cart")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public ShoppingCartResponseDto updateQuantity(
             @PathVariable
             @Parameter(description = "Cart item id")
@@ -64,14 +63,14 @@ public class ShoppingCartController {
             @RequestBody
             ShoppingCartUpdateQuantityRequestDto dto,
             Authentication authentication) {
-        shoppingCartService.updateCartItemQuantity(cartItemId, dto);
         User user = (User) authentication.getPrincipal();
+        shoppingCartService.updateCartItemQuantity(cartItemId, dto, user.getId());
         return shoppingCartService.findByUser(user.getId());
     }
 
     @DeleteMapping("/cart-items/{cartItemId}")
     @Operation(summary = "endpoint for remove book from shopping cart")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public ShoppingCartResponseDto removeBookFromShoppingCart(
             @PathVariable
             @Parameter(description = "Cart item id") Long cartItemId,
@@ -79,5 +78,5 @@ public class ShoppingCartController {
         User user = (User) authentication.getPrincipal();
         return shoppingCartService.removeBookFromShoppingCart(cartItemId,
                 user.getId());
-    }
+    } //As a user i can delete cart item from not my shoping cart
 }

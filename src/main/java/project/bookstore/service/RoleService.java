@@ -7,5 +7,4 @@ public interface RoleService {
 
     Role findByRoleName(Role.RoleName roleName);
 
-    void delete(Long id);
 }

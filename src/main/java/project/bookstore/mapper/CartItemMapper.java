@@ -16,7 +16,7 @@ public interface CartItemMapper {
     CartItemDto toDto(CartItem cartItem);
 
     @Mapping(ignore = true, target = "id")
-    @Mapping(source = "bookId", target = "book.id")
+    @Mapping(source = "bookId", target = "book", qualifiedByName = "bookFromId")
     @Mapping(source = "quantity", target = "quantity")
     @Mapping(source = "shoppingCartId", target = "shoppingCart.id")
     @Mapping(ignore = true, target = "deleted")

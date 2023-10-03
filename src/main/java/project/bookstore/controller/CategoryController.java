@@ -46,14 +46,14 @@ public class CategoryController {
     @GetMapping
     @Operation(summary = "endpoint for get all categories from db",
             description = "You can use pagination and sorting")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public List<CategoryDto> getAll(Pageable pageable) {
         return categoryService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get category by id")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public CategoryDto findById(@PathVariable @Parameter(description = "Category Id") Long id) {
         return categoryService.findById(id);
     }
@@ -81,7 +81,7 @@ public class CategoryController {
 
     @GetMapping("/{id}/books")
     @Operation(summary = "endpoint for getting all books by category id")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public List<BookDtoWithoutCategoryIds> getBooksByCategoryId(@PathVariable
                                                                 @Parameter(
                                                                         description = "Category Id")
