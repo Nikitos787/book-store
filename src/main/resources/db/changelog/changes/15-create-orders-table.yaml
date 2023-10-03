@@ -1,37 +1,37 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-table
+      id: create-orders-table
       author: nikitos
       changes:
         - createTable:
-            tableName: users
+            tableName: orders
             columns:
               - column:
                   name: id
                   type: bigint
                   autoIncrement: true
                   constraints:
+                    nullable: false
                     primaryKey: true
-                    nullable: false
+                    deleteCascade: true
               - column:
-                  name: email
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: password
-                  type: varchar(255)
+                  name: user_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: first_name
+                  name: status
                   type: varchar(255)
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: varchar(255)
+                  name: total
+                  type: DECIMAL(10, 2)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: order_date
+                  type: datetime
                   constraints:
                     nullable: false
               - column:
@@ -45,3 +45,13 @@ databaseChangeLog:
                   defaultValue: 0
                   constraints:
                     nullable: false
+  - changeSet:
+      id: createUserReference
+      author: nikitos
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: orders
+            baseColumnNames: user_id
+            constraintName: fk_user_orders_users
+            referencedTableName: users
+            referencedColumnNames: id

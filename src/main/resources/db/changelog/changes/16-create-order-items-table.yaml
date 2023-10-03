@@ -1,10 +1,10 @@
 databaseChangeLog:
   - changeSet:
-      id: create-user-table
+      id: create-order-items-table
       author: nikitos
       changes:
         - createTable:
-            tableName: users
+            tableName: order_items
             columns:
               - column:
                   name: id
@@ -14,29 +14,23 @@ databaseChangeLog:
                     primaryKey: true
                     nullable: false
               - column:
-                  name: email
-                  type: varchar(255)
-                  constraints:
-                    nullable: false
-                    unique: true
-              - column:
-                  name: password
-                  type: varchar(255)
+                  name: order_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: first_name
-                  type: varchar(255)
+                  name: book_id
+                  type: bigint
                   constraints:
                     nullable: false
               - column:
-                  name: last_name
-                  type: varchar(255)
+                  name: quantity
+                  type: INTEGER
                   constraints:
                     nullable: false
               - column:
-                  name: shipping_address
-                  type: varchar(255)
+                  name: price
+                  type: DECIMAL(10, 2)
                   constraints:
                     nullable: false
               - column:
@@ -45,3 +39,15 @@ databaseChangeLog:
                   defaultValue: 0
                   constraints:
                     nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: order_id
+            referencedTableName: orders
+            constraintName: fk-order-order-items-orders
+            referencedColumnNames: id
+        - addForeignKeyConstraint:
+            baseTableName: order_items
+            baseColumnNames: book_id
+            referencedTableName: books
+            constraintName: fk-book-orders-items-books
+            referencedColumnNames: id

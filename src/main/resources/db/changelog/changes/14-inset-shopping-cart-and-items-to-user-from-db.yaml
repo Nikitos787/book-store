@@ -1,0 +1,45 @@
+databaseChangeLog:
+  - changeSet:
+      id: insert-shop-cart-to-user-to-db
+      author: nikitos
+      changes:
+        - insert:
+            tableName: shopping_carts
+            columns:
+              - column:
+                  name: id
+                  value: 1
+        - insert:
+            tableName: shopping_carts
+            columns:
+              - column:
+                  name: id
+                  value: 2
+  - changeSet:
+      id: insert-items-to-shop-cart-to-db
+      author: nikitos
+      changes:
+        - insert:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: shopping_cart_id
+                  value: 2
+              - column:
+                  name: book_id
+                  value: 1
+              - column:
+                  name: quantity
+                  value: 3
+        - insert:
+            tableName: cart_items
+            columns:
+              - column:
+                  name: shopping_cart_id
+                  value: 1
+              - column:
+                  name: book_id
+                  value: 2
+              - column:
+                  name: quantity
+                  value: 4

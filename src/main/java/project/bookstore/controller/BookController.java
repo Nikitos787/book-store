@@ -42,21 +42,21 @@ public class BookController {
     @GetMapping
     @Operation(summary = "Get all books from db.",
             description = "You can use pagination and sorting")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public List<BookDto> findAll(Pageable pageable) {
         return bookService.findAll(pageable);
     }
 
     @GetMapping("/{id}")
     @Operation(summary = "Get book by id")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public BookDto findById(@PathVariable @Parameter(description = "Book id") Long id) {
         return bookService.findById(id);
     }
 
     @GetMapping("/search")
     @Operation(summary = "Get books by parameters")
-    @Secured({ADMIN, USER})
+    @Secured(USER)
     public List<BookDto> searchBooks(@Parameter(schema = @Schema(
             implementation = BookSearchParametersDto.class))
                                      BookSearchParametersDto searchParametersDto) {
